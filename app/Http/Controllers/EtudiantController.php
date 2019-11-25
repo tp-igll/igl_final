@@ -10,7 +10,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EtudiantController extends Controller
 {
-    /**********************MY FUNCTIONS********************/
+    
+    ///ca c une classe de matricule
+    ///
+    ///Classse matricule
+
     public function matricule(){
         $rang=Etudiant::count()+1;
         if (($rang>=1) && ($rang<10)) $matricule=date('y').'/000'.$rang;
@@ -18,12 +22,25 @@ class EtudiantController extends Controller
         else $matricule=date('y').'/0'.$rang;
         return $matricule;
     }
+
+    /**
+     * elle cree un email 
+     * @param $nom le nom de l'étudiant
+     * @param $prenom prénom de léetdjkhjh
+     */
     public function create_email($nom,$prenom) {
         $date=date('y');
         $rang = ((int) $date) - 9+96 ;
         return chr($rang).$prenom[0].'_'.$nom.'@esi.dz';
     }
 
+    /**
+     * generer_section
+     *
+     * @param  mixed $niv
+     *
+     * @return void
+     */
     public function generer_section($niv){
         switch ($niv) {
             case "1CS":{
