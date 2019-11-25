@@ -11,10 +11,13 @@ use Symfony\Component\HttpFoundation\Response;
 class EtudiantController extends Controller
 {
     
-    ///ca c une classe de matricule
-    ///
-    ///Classse matricule
+    
 
+    /**
+     * La fonction matricule génère un matricule pour un étudiant lors de l'inscrpition
+     *
+     * @return $matricule
+     */
     public function matricule(){
         $rang=Etudiant::count()+1;
         if (($rang>=1) && ($rang<10)) $matricule=date('y').'/000'.$rang;
@@ -24,10 +27,12 @@ class EtudiantController extends Controller
     }
 
     /**
-     * elle cree un email 
+     * La fonction create_email crée un email pour un étudiant lors de l'inscription 
      * @param $nom le nom de l'étudiant
      * @param $prenom prénom de léetdjkhjh
+     *@return $email
      */
+
     public function create_email($nom,$prenom) {
         $date=date('y');
         $rang = ((int) $date) - 9+96 ;
@@ -35,11 +40,11 @@ class EtudiantController extends Controller
     }
 
     /**
-     * generer_section
+     * La fonction generer_section génère une section pour un étudiant d'une façon aléatoire et selon son niveau
      *
-     * @param  mixed $niv
+     * @param  $niv
      *
-     * @return void
+     * @return $section
      */
     public function generer_section($niv){
         switch ($niv) {
@@ -61,6 +66,14 @@ class EtudiantController extends Controller
             }
         }
     }
+    /**
+     *La fonction generer_groupe génère un groupe a un étudiant suivant son niveau et sa section et selon une manière aléatoire
+     *
+     * @param  $niv
+     * @param  $sect
+     *
+     * @return $groupe
+     */
     public function generer_groupe($niv,$sect){
         switch ($niv) {
             case "1CS": {
@@ -82,11 +95,21 @@ class EtudiantController extends Controller
         }
 
     }
+    /**
+     *La fonction generer_niveau génère un niveau a un étudiant d'une manière aléatoire
+     *
+     * @return $niveau
+     */
     public function generer_niveau(){
         $niv=['1CP','2CP','1CS','2CS','3CS'];
         return $niv[mt_rand(0,4)];
     }
     /************** CRUD FUNCTIONS***************************/
+    /**
+     * La fonction index récupère tous les étudiants dans un tableau 
+     *
+     * @return $etudiants
+     */
     public function index() { //Récupère tous les étudiants dans un tableau $etudiants
         $etudiants = Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
         $etudiants_tout=Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
@@ -97,6 +120,13 @@ class EtudiantController extends Controller
         return view('app');
     }
 
+    /**
+     * La fonction store inscrit un étudiant dans la base de données
+     *
+     * @param  $request
+     *
+     * 
+     */
     public function store(EtudiantRequest $request) { //INSCRIT UN ETUDIANT DANS LA BDD
         $infos=$request->input()['0'];
         if (!(Etudiant::where('numero',$infos['num'])->first())) {
@@ -118,6 +148,14 @@ class EtudiantController extends Controller
     }
 
 
+    /**
+     * La fonction update permet de modifier les données d'un étudiant
+     *
+     * @param  $numero
+     * @param  $request
+     *
+     * 
+     */
     public function update($numero, EtudiantRequest $request) { //Modifie étudiant dont l'id = $id
         $id=Etudiant::where('numero',$numero)->value('id');
         $etudiant = Etudiant::find($id);
@@ -126,6 +164,13 @@ class EtudiantController extends Controller
     }
 
 
+    /**
+     * La fonction destroy permet de supprimer un étudiants de la base de données
+     *
+     * @param   $numero
+     *
+     * 
+     */
     public function destroy ($numero) {//Supprime un étudiant
         $id=Etudiant::where('numero',$numero)->value('id');
         $etudiant = Etudiant::destroy($id);
